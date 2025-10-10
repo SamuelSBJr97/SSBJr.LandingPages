@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
   
   // Opcional: configura base path se hospedado em subdiretório do GitHub Pages
   // basePath: process.env.NODE_ENV === 'production' ? '/SSBJr.LandingPages' : '',
+  
+  // PWA configurações
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Configurações do service worker serão tratadas manualmente
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste PWA - SSBJr Landing Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background: rgba(46, 160, 67, 0.3); }
+        .error { background: rgba(239, 68, 68, 0.3); }
+        .warning { background: rgba(245, 158, 11, 0.3); }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        #installButton {
+            background: #10b981;
+        }
+        #installButton:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Teste PWA - SSBJr Landing Pages</h1>
+    
+    <div class="card">
+        <h2>Status das Funcionalidades PWA</h2>
+        <div id="serviceWorkerStatus" class="status"></div>
+        <div id="manifestStatus" class="status"></div>
+        <div id="installStatus" class="status"></div>
+        <div id="offlineStatus" class="status"></div>
+    </div>
+
+    <div class="card">
+        <h2>Controles</h2>
+        <button onclick="testServiceWorker()">🔧 Testar Service Worker</button>
+        <button onclick="testManifest()">📄 Testar Manifest</button>
+        <button onclick="testOffline()">🌐 Testar Offline</button>
+        <button id="installButton" onclick="triggerInstall()" style="display: none;">📱 Instalar App</button>
+    </div>
+
+    <div class="card">
+        <h2>Informações do PWA</h2>
+        <p><strong>Nome:</strong> SSBJr Landing Pages</p>
+        <p><strong>Descrição:</strong> Landing pages dinâmicas com integração de redes sociais</p>
+        <p><strong>Tema:</strong> #3b82f6</p>
+        <p><strong>Modo:</strong> Standalone</p>
+    </div>
+
+    <script>
+        let deferredPrompt;
+
+        // Service Worker Test
+        function testServiceWorker() {
+            const status = document.getElementById('serviceWorkerStatus');
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        status.className = 'status success';
+                        status.textContent = '✅ Service Worker registrado com sucesso!';
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(error => {
+                        status.className = 'status error';
+                        status.textContent = '❌ Erro ao registrar Service Worker: ' + error;
+                        console.log('SW registration failed: ', error);
+                    });
+            } else {
+                status.className = 'status error';
+                status.textContent = '❌ Service Workers não são suportados neste navegador';
+            }
+        }
+
+        // Manifest Test
+        function testManifest() {
+            const status = document.getElementById('manifestStatus');
+            fetch('/manifest.json')
+                .then(response => response.json())
+                .then(manifest => {
+                    status.className = 'status success';
+                    status.textContent = `✅ Manifest carregado: ${manifest.name}`;
+                })
+                .catch(error => {
+                    status.className = 'status error';
+                    status.textContent = '❌ Erro ao carregar manifest: ' + error;
+                });
+        }
+
+        // Offline Test
+        function testOffline() {
+            const status = document.getElementById('offlineStatus');
+            if (navigator.onLine) {
+                status.className = 'status success';
+                status.textContent = '✅ Online - Cache funcionará quando offline';
+            } else {
+                status.className = 'status warning';
+                status.textContent = '⚠️ Offline - Testando cache...';
+            }
+        }
+
+        // Install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installButton').style.display = 'inline-block';
+        });
+
+        function triggerInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    const status = document.getElementById('installStatus');
+                    if (choiceResult.outcome === 'accepted') {
+                        status.className = 'status success';
+                        status.textContent = '✅ App instalado com sucesso!';
+                    } else {
+                        status.className = 'status warning';
+                        status.textContent = '⚠️ Instalação cancelada pelo usuário';
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installButton').style.display = 'none';
+                });
+            }
+        }
+
+        // Auto-run tests
+        window.addEventListener('load', () => {
+            testServiceWorker();
+            testManifest();
+            testOffline();
+        });
+    </script>
+</body>
+</html>

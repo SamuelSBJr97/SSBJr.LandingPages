@@ -2,6 +2,14 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import Ads from '../../components/Ads';
+import CommunityFeed from '../../components/CommunityFeed';
+import PurchaseThermometer from '../../components/PurchaseThermometer';
+import ChatWidget from '../../components/ChatWidget';
+import GroupLinks from '../../components/GroupLinks';
+import CookieConsent from '../../components/CookieConsent';
+import NotificationManager from '../../components/NotificationManager';
+import AnalyticsTracker from '../../components/AnalyticsTracker';
+import { getCommunityPosts } from '../../data/communityData';
 
 // Base de dados das landing pages (em um projeto real, isso viria de uma API ou CMS)
 const landingPagesData = {
@@ -201,6 +209,9 @@ export default async function ClienteLandingPage({ params }) {
 
   const { content } = pageData;
 
+  // Busca posts da comunidade para esta landing page
+  const communityPosts = getCommunityPosts(slug);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -308,6 +319,35 @@ export default async function ClienteLandingPage({ params }) {
         </div>
       </section>
 
+      {/* Community Section - Similar ao Steam */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Termômetro de Compras */}
+            <div className="lg:col-span-1">
+              <PurchaseThermometer 
+                posts={communityPosts}
+                productName={content.hero.title}
+                showDetails={true}
+                animate={true}
+                size="medium"
+              />
+            </div>
+            
+            {/* Feed da Comunidade */}
+            <div className="lg:col-span-2">
+              <CommunityFeed 
+                posts={communityPosts}
+                maxPosts={6}
+                layout="grid"
+                showSentiment={true}
+                autoRefresh={0}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="bg-blue-600 text-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -331,6 +371,9 @@ export default async function ClienteLandingPage({ params }) {
       {/* Anúncio Rodapé */}
       <Ads position="bottom" type="banner" />
 
+      {/* Grupos Exclusivos */}
+      <GroupLinks landingPageSlug={slug} />
+
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -344,6 +387,18 @@ export default async function ClienteLandingPage({ params }) {
           </div>
         </div>
       </footer>
+
+      {/* Chat Widget */}
+      <ChatWidget landingPageSlug={slug} />
+
+      {/* Cookie Consent */}
+      <CookieConsent />
+
+      {/* Notification Manager */}
+      <NotificationManager />
+
+      {/* Analytics Tracker */}
+      <AnalyticsTracker landingPageSlug={slug} />
     </div>
   );
 }
