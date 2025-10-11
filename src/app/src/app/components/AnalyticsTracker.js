@@ -7,6 +7,17 @@ export default function AnalyticsTracker({ landingPageSlug }) {
   const sendToExternal = useCallback((event, data) => {
     try {
       if (typeof window === 'undefined') return;
+      // Check consent before forwarding
+      try {
+        const cookieMatch = document.cookie.match(/ssbjr_cookie_consent=([^;]+)/);
+        const raw = cookieMatch ? decodeURIComponent(cookieMatch[1]) : (localStorage.getItem('ssbjr_cookie_consent') || null);
+        const consent = raw ? JSON.parse(raw) : null;
+        const analyticsAllowed = consent?.analytics === true;
+
+        if (!analyticsAllowed) return;
+      } catch {
+        return; // if we can't parse consent, be conservative and do not forward
+      }
 
       // Google Analytics (gtag)
       if (window.gtag && typeof window.gtag === 'function') {

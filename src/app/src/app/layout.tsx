@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import PWAInstaller from "./components/PWAInstaller";
 import "./globals.css";
+// Note: cookies() removed to allow static export; prefs are applied client-side
+import ClientWrappers from './components/ClientWrappers';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,13 +73,10 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Theme and lang will be applied client-side to avoid prerender errors for static export
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={`theme-day`}>
       <head>
         <link rel="icon" href="/favicon-32x32.png" sizes="32x32" />
         <link rel="icon" href="/favicon-16x16.png" sizes="16x16" />
@@ -91,26 +90,15 @@ export default function RootLayout({
         {/* SEO / owner meta */}
         <meta name="ceo" content="SSBJr" />
 
-        {/* Google Analytics (gtag) - set NEXT_PUBLIC_GA_ID in env */}
-        {process.env.NEXT_PUBLIC_GA_ID ? (
-          <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
-            <script dangerouslySetInnerHTML={{ __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', { page_path: window.location.pathname });` }} />
-          </>
-        ) : null}
-
-        {/* Facebook Pixel - set NEXT_PUBLIC_FB_PIXEL_ID in env */}
-        {process.env.NEXT_PUBLIC_FB_PIXEL_ID ? (
-          <>
-            <script dangerouslySetInnerHTML={{ __html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js'); fbq('init', '${process.env.NEXT_PUBLIC_FB_PIXEL_ID}'); fbq('track', 'PageView');` }} />
-            <noscript dangerouslySetInnerHTML={{ __html: `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_FB_PIXEL_ID}&ev=PageView&noscript=1" alt="" />` }} />
-          </>
-        ) : null}
+        {/* Analytics Loader will inject GA/FB scripts client-side after consent */}
+        {/* Inline script: apply theme and lang early to avoid FOUC (client fallback) */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('site_theme');if(t){document.documentElement.classList.remove('theme-day','theme-night','theme-glass');document.documentElement.classList.add('theme-'+t);}var lang=localStorage.getItem('site_lang');if(lang){document.documentElement.lang=lang;} }catch(e){} })();` }} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <PWAInstaller />
+  <ClientWrappers />
         {children}
       </body>
     </html>

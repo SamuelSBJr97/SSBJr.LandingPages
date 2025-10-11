@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "build:static": "next build && next export",
+    "build": "next build",
+  "build:static": "next build",
     "export": "next export",
     "start": "next start",
     "serve": "serve out",
     "lint": "eslint",
+    "test": "echo \"No tests configured yet\"",
+    "ci": "npm run lint && npm run test",
     "preview": "npm run build && npm run serve",
     "prepare:cloudflare": "node ./scripts/prepare-cloudflare.mjs",
     "build:cloudflare": "next-on-pages --outdir out-pages"

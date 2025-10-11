@@ -5,12 +5,7 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Theme variables are controlled via root and theme-{name} classes */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -24,3 +19,43 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Theme classes */
+.theme-day {
+  --background: #ffffff;
+  --foreground: #171717;
+  --muted: #6b7280;
+  --card-bg: #ffffff;
+  --glass-bg: rgba(255,255,255,0.6);
+}
+
+.theme-night {
+  --background: #0a0a0a;
+  --foreground: #e6eef8;
+  --muted: #9ca3af;
+  --card-bg: #071023;
+  --glass-bg: rgba(10,10,10,0.5);
+}
+
+.theme-glass {
+  --background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  --foreground: #0f172a;
+  --muted: #475569;
+  --card-bg: rgba(255,255,255,0.12);
+  --glass-bg: rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px) saturate(120%);
+}
+
+/* Utilities for cards and backgrounds that respect theme vars */
+.bg-card {
+  background: var(--card-bg);
+}
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* Example text colors */
+.text-muted { color: var(--muted); }
+.text-fg { color: var(--foreground); }

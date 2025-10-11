@@ -51,25 +51,11 @@ export default function SocialEmbed({
   };
 
   // Função para extrair ID do Twitter
-  const getTwitterId = (url) => {
-    const regExp = /status\/(\d+)/;
-    const match = url.match(regExp);
-    return match ? match[1] : null;
-  };
+  // (removido) getTwitterId não é mais necessário porque sempre mostramos tendências
 
   // Carregar scripts externos quando necessário
   useEffect(() => {
-    if (type === 'twitter') {
-      // Carregar Twitter Widget Script
-      if (!window.twttr) {
-        const script = document.createElement('script');
-        script.src = 'https://platform.twitter.com/widgets.js';
-        script.async = true;
-        document.head.appendChild(script);
-      } else {
-        window.twttr.widgets.load(containerRef.current);
-      }
-    }
+    // Twitter trends are rendered via TwitterTrends component (no widgets.js required)
 
     if (type === 'instagram') {
       // Carregar Instagram Embed Script
@@ -129,20 +115,7 @@ export default function SocialEmbed({
       }
 
       case 'twitter': {
-        // Se a URL é de um tweet específico, exibimos o tweet embutido.
-        // Caso contrário, exibimos a seção de tendências locais do Twitter.
-        const tweetId = getTwitterId(url);
-        if (tweetId) {
-          return (
-            <div ref={containerRef} className="flex justify-center">
-              <blockquote className="twitter-tweet" data-theme="light">
-                <a href={url}>Tweet</a>
-              </blockquote>
-            </div>
-          );
-        }
-
-        // Não é um link de tweet -> mostrar trends locais
+        // Sempre mostrar tendências locais ao invés de embed de tweet
         return <TwitterTrends />;
       }
 

@@ -1,6 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import Sponsor from "./components/Sponsor";
+import useTranslation from './i18n/useTranslation';
+import ThemeSwitcher from "./components/ThemeSwitcher";
 
 // Lista de clientes/campanhas disponíveis
 const landingPages = [
@@ -37,6 +41,7 @@ const landingPages = [
 ];
 
 export default function Home() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -54,11 +59,17 @@ export default function Home() {
               />
               <h1 className="text-2xl font-bold text-gray-900">Landing Pages</h1>
             </div>
-            <nav className="hidden md:flex space-x-6">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
-              <Link href="/sobre" className="text-gray-600 hover:text-gray-900">Sobre</Link>
-              <Link href="/contato" className="text-gray-600 hover:text-gray-900">Contato</Link>
-            </nav>
+            <div className="hidden md:flex items-center space-x-6">
+              <nav className="hidden md:flex space-x-6">
+                <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
+                <Link href="/sobre" className="text-gray-600 hover:text-gray-900">Sobre</Link>
+                <Link href="/contato" className="text-gray-600 hover:text-gray-900">Contato</Link>
+              </nav>
+              <div className="flex items-center space-x-4">
+                <ThemeSwitcher />
+                <Link href="/lang" className="text-gray-600 hover:text-gray-900">Idioma</Link>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -78,7 +89,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Landing Pages
+            {t('welcome')}
             <span className="text-blue-600"> Personalizadas</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
@@ -90,7 +101,7 @@ export default function Home() {
               href="#landing-pages"
               className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
             >
-              Ver Landing Pages
+              {t('viewLandingPages')}
               <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
@@ -99,7 +110,7 @@ export default function Home() {
               href="/contato"
               className="inline-flex items-center px-8 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors duration-200"
             >
-              Solicitar Nova Landing Page
+              {t('requestLanding')}
             </Link>
           </div>
         </section>

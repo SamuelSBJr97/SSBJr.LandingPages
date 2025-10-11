@@ -14,7 +14,7 @@ export default function CookieConsent() {
 
   useEffect(() => {
     // Verificar se o usuário já deu consentimento
-    const consent = localStorage.getItem('ssbjr_cookie_consent');
+    const consent = localStorage.getItem('ssbjr_cookie_consent') || (document.cookie.match(/ssbjr_cookie_consent=([^;]+)/)?.[1] ? decodeURIComponent(document.cookie.match(/ssbjr_cookie_consent=([^;]+)/)[1]) : null);
     if (!consent) {
       setShowBanner(true);
     } else {
@@ -33,6 +33,8 @@ export default function CookieConsent() {
     };
     
     localStorage.setItem('ssbjr_cookie_consent', JSON.stringify(allAccepted));
+  // Persist in cookie for server-side reads when needed
+  document.cookie = `ssbjr_cookie_consent=${encodeURIComponent(JSON.stringify(allAccepted))}; path=/; max-age=31536000; samesite=lax`;
     setPreferences(allAccepted);
     setShowBanner(false);
     
@@ -50,6 +52,7 @@ export default function CookieConsent() {
     };
     
     localStorage.setItem('ssbjr_cookie_consent', JSON.stringify(onlyNecessary));
+  document.cookie = `ssbjr_cookie_consent=${encodeURIComponent(JSON.stringify(onlyNecessary))}; path=/; max-age=31536000; samesite=lax`;
     setPreferences(onlyNecessary);
     setShowBanner(false);
     
@@ -64,6 +67,7 @@ export default function CookieConsent() {
     };
     
     localStorage.setItem('ssbjr_cookie_consent', JSON.stringify(savedPrefs));
+  document.cookie = `ssbjr_cookie_consent=${encodeURIComponent(JSON.stringify(savedPrefs))}; path=/; max-age=31536000; samesite=lax`;
     setShowBanner(false);
     setShowPreferences(false);
     
