@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import TwitterTrends from './TwitterTrends';
 
 /**
  * Componente SocialEmbed - Incorpora conteúdo de diversas redes sociais
@@ -128,16 +129,21 @@ export default function SocialEmbed({
       }
 
       case 'twitter': {
+        // Se a URL é de um tweet específico, exibimos o tweet embutido.
+        // Caso contrário, exibimos a seção de tendências locais do Twitter.
         const tweetId = getTwitterId(url);
-        if (!tweetId) return <div className="text-red-500">URL do Twitter inválida</div>;
-        
-        return (
-          <div ref={containerRef} className="flex justify-center">
-            <blockquote className="twitter-tweet" data-theme="light">
-              <a href={url}>Tweet</a>
-            </blockquote>
-          </div>
-        );
+        if (tweetId) {
+          return (
+            <div ref={containerRef} className="flex justify-center">
+              <blockquote className="twitter-tweet" data-theme="light">
+                <a href={url}>Tweet</a>
+              </blockquote>
+            </div>
+          );
+        }
+
+        // Não é um link de tweet -> mostrar trends locais
+        return <TwitterTrends />;
       }
 
       case 'tiktok': {
