@@ -10,23 +10,27 @@
     "start": "next start",
     "serve": "serve out",
     "lint": "eslint",
-    "preview": "npm run build && npm run serve"
+    "preview": "npm run build && npm run serve",
+    "prepare:cloudflare": "node ./scripts/prepare-cloudflare.mjs",
+  "build:cloudflare": "npm run build && next-on-pages build --outdir out-pages"
   },
   "dependencies": {
     "next": "15.5.4",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "sharp": "^0.34.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^3.27.0",
+    "@cloudflare/next-on-pages": "^1.1.3"
   }
 }
